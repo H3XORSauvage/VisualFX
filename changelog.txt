@@ -1,0 +1,64 @@
+Notes de Version de VisualFX
+
+Version 2.1.1 - Correction du mode plein écran (01/07/2025)
+
+ * Correction d'un bug où les filtres disparaissaient en mode plein écran.
+ * Les filtres sont maintenant appliqués correctement aux vidéos en plein écran.
+
+ Version 2.1.0 - Améliorations de la Performance et Ciblage Précis (Date : [Date actuelle])
+
+
+   * Optimisation de la Performance :
+       * Implémentation de techniques avancées (will-change, transform: translateZ(0)) pour forcer
+         l'accélération matérielle et améliorer la fluidité du navigateur, même avec des filtres intenses et
+         sur les vidéos.
+       * Les filtres sont désormais appliqués à l'élément <body> pour une meilleure compatibilité et
+         performance.
+   * Ciblage d'Éléments Spécifiques :
+       * Ajout d'un mode "Sélectionner un élément" : Appliquez les filtres uniquement à un élément HTML précis
+          sur la page en cliquant dessus.
+       * Amélioration de l'expérience utilisateur du mode sélecteur :
+           * Message d'instruction clair sur la page.
+           * Possibilité d'annuler la sélection avec la touche Échap.
+           * Feedback visuel sur le bouton de la popup pendant la sélection.
+   * Nettoyage des Filtres :
+       * Suppression des filtres "Niveaux de gris" et "Sépia" pour simplifier l'interface et se concentrer sur
+          les effets les plus utilisés.
+   * Configuration :
+       * Ajout de l'ID d'extension (gecko.id) dans manifest.json pour une meilleure gestion par Firefox.
+
+
+  Version 2.0.0 - Contrôle Avancé et Préréglages (Date : [Date de la v2.0])
+
+
+   * Multiples Filtres Visuels :
+       * Ajout des contrôles pour la Luminosité (brightness), le Contraste (contrast), l'Inversion (invert) et
+          la Rotation de Teinte (hue-rotate).
+       * Le slider de Saturation peut désormais aller jusqu'à 400%.
+   * Réglages par Site Web :
+       * Les paramètres de filtre sont désormais sauvegardés et appliqués automatiquement pour chaque site web
+          visité.
+   * Système de Préréglages (Presets) :
+       * Nouvel onglet "Préréglages" dans la popup.
+       * Sauvegardez vos combinaisons de filtres préférées sous un nom personnalisé.
+       * Appliquez un préréglage en un clic.
+       * Supprimez les préréglages inutiles.
+   * Interface Utilisateur Améliorée :
+       * Refonte complète de la popup avec une interface à onglets ("Contrôles" et "Préréglages").
+       * Champs de saisie numérique pour chaque filtre, permettant une valeur précise en plus du slider.
+       * Boutons "Activer l'extension" (globalement) et "Activer pour ce site" pour un contrôle rapide.
+       * Bouton "Réinitialiser pour ce site" pour revenir aux valeurs par défaut.
+
+  Version 1.1.0 - Style et Précision (Date : [Date de la v1.1])
+
+
+   * Design Tokyo Night :
+       * Refonte visuelle de la popup avec un thème sombre "Tokyo Night" (coins arrondis, couleurs
+         harmonieuses).
+   * Affichage du Pourcentage :
+       * Affichage en temps réel de la valeur du pourcentage de saturation à côté du slider.
+
+  Version 1.0.0 - Lancement Initial (Date : [Date de la v1.0])
+
+
+   * Extension initiale permettant de modifier la saturation d'une page web via un slider.

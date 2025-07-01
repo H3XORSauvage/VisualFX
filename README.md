@@ -16,7 +16,7 @@ Pour tester l'extension localement dans Firefox, vous pouvez la charger comme un
 2.  Entrez `about:debugging` dans la barre d'adresse et appuyez sur Entrée.
 3.  Cliquez sur l'onglet **"Ce Firefox"** sur la gauche.
 4.  Cliquez sur le bouton **"Charger un module complémentaire temporaire..."**.
-5.  Naviguez jusqu'au dossier de l'extension (`C:\Users\utilisateur\saturation-extension`).
+5.  Naviguez jusqu'au dossier de l'extension (`C:\l'endroit ou tu la mis...`).
 6.  Sélectionnez le fichier `manifest.json` (ou n'importe quel autre fichier dans le dossier) et cliquez sur **Ouvrir**.
 
 L'extension sera maintenant installée temporairement et son icône apparaîtra dans la barre d'outils de Firefox. Elle restera active jusqu'à ce que vous redémarriez le navigateur.

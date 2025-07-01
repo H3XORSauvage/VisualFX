@@ -1,0 +1,7 @@
+Libellés non associés : Les étiquettes pour les curseurs (Saturation, Luminosité, etc.) sont de simples textes (<span>) et ne sont pas sémantiquement liées aux contrôles (<input>) correspondants. Cela rend leur utilisation difficile avec des technologies d'assistance comme les lecteurs d'écran.
+
+Absence de hiérarchie de titres : La page utilise un <h3> sans qu'il y ait de <h1> ou <h2> au préalable. Une structure de titres incorrecte ou incomplète nuit à la navigation pour les utilisateurs de lecteurs d'écran.
+
+Composants personnalisés non accessibles : Les interrupteurs à bascule (switch) et le système d'onglets sont des créations personnalisées. Sans attributs ARIA (comme role, aria-checked, aria-selected), leur fonction et leur état ne sont pas communiqués aux technologies d'assistance.
+
+Répétition de code CSS : Plusieurs sélecteurs CSS partagent des déclarations de style identiques. Par exemple, input[type="number"] et #preset-name-input ont des styles de fond, de couleur et de bordure très similaires qui pourraient être regroupés dans une classe commune pour éviter la duplication.

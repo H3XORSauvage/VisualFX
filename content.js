@@ -3,7 +3,8 @@ const filterMap = {
     brightness: 'brightness',
     contrast: 'contrast',
     invert: 'invert',
-    'hue-rotate': 'hue-rotate'
+    'hue-rotate': 'hue-rotate',
+    blur: 'blur'
 };
 
 const defaultSettings = {
@@ -212,39 +213,29 @@ function setupAmbilight(settings) {
 }
 
 function createBlueLightOverlay() {
-    if (blueLightFilterOverlay) return;
-    blueLightFilterOverlay = document.createElement('div');
-    Object.assign(blueLightFilterOverlay.style, {
-        position: 'fixed',
-        top: '0',
-        left: '0',
-        width: '100vw',
-        height: '100vh',
-        backgroundColor: 'rgba(255, 140, 0, 0.2)', // Couleur orange chaude
-        mixBlendMode: 'multiply', // Mode de fusion magique
-        pointerEvents: 'none', // Pour pouvoir cliquer à travers
-        zIndex: '2147483647', // Au-dessus de tout
-        display: 'none' // Caché par défaut
-    });
-    document.documentElement.appendChild(blueLightFilterOverlay);
+    if (!blueLightFilterOverlay) {
+        blueLightFilterOverlay = document.createElement('div');
+        Object.assign(blueLightFilterOverlay.style, {
+            backgroundColor: 'rgba(255, 140, 0, 0.2)', // Couleur orange chaude
+            mixBlendMode: 'multiply', // Mode de fusion magique
+            pointerEvents: 'none', // Pour pouvoir cliquer à travers
+            zIndex: '2147483647', // Au-dessus de tout
+        });
+    }
+    return blueLightFilterOverlay;
 }
 
 function createNdFilterOverlay() {
-    if (ndFilterOverlay) return;
-    ndFilterOverlay = document.createElement('div');
-    Object.assign(ndFilterOverlay.style, {
-        position: 'fixed',
-        top: '0',
-        left: '0',
-        width: '100vw',
-        height: '100vh',
-        backgroundColor: 'black',
-        mixBlendMode: 'multiply', // Ajouté pour un vrai effet ND
-        pointerEvents: 'none',
-        zIndex: '2147483646', // Juste en dessous du filtre de lumière bleue
-        display: 'none'
-    });
-    document.documentElement.appendChild(ndFilterOverlay);
+    if (!ndFilterOverlay) {
+        ndFilterOverlay = document.createElement('div');
+        Object.assign(ndFilterOverlay.style, {
+            backgroundColor: 'black',
+            mixBlendMode: 'multiply', // Ajouté pour un vrai effet ND
+            pointerEvents: 'none',
+            zIndex: '2147483646', // Juste en dessous du filtre de lumière bleue
+        });
+    }
+    return ndFilterOverlay;
 }
 
 // --- Filter Application Functions ---
@@ -263,8 +254,39 @@ function applyFilters() {
         if (document.fullscreenElement) document.fullscreenElement.style.filter = 'none';
         if (filterOverlay) Object.assign(filterOverlay.style, { filter: 'none', clipPath: 'none', webkitClipPath: 'none' });
 
-        createBlueLightOverlay();
-        createNdFilterOverlay();
+        const blueLightOverlay = createBlueLightOverlay();
+        const ndOverlay = createNdFilterOverlay();
+
+        const currentFullscreenElement = document.fullscreenElement;
+        const targetParent = currentFullscreenElement || document.documentElement;
+
+        // Move overlays to the correct parent if needed
+        if (blueLightOverlay.parentElement !== targetParent) {
+            targetParent.appendChild(blueLightOverlay);
+        }
+        if (ndOverlay.parentElement !== targetParent) {
+            targetParent.appendChild(ndOverlay);
+        }
+
+        // Apply styles based on fullscreen state
+        const overlayPosition = currentFullscreenElement ? 'absolute' : 'fixed';
+        const overlayWidth = currentFullscreenElement ? '100%' : '100vw';
+        const overlayHeight = currentFullscreenElement ? '100%' : '100vh';
+
+        Object.assign(blueLightOverlay.style, {
+            position: overlayPosition,
+            width: overlayWidth,
+            height: overlayHeight,
+            top: '0',
+            left: '0',
+        });
+        Object.assign(ndOverlay.style, {
+            position: overlayPosition,
+            width: overlayWidth,
+            height: overlayHeight,
+            top: '0',
+            left: '0',
+        });
 
         if (isGloballyEnabled && isSiteEnabled) {
             // Appliquer le filtre de lumière bleue
@@ -288,7 +310,7 @@ function applyFilters() {
 
             let filters = Object.entries(filterMap).map(([key, filterName]) => {
                 const value = siteSettings[key] !== undefined ? siteSettings[key] : defaultSettings[key];
-                let unit = (key === 'hue-rotate') ? 'deg' : '%';
+                let unit = (key === 'hue-rotate') ? 'deg' : (key === 'blur') ? 'px' : '%';
                 return `${filterName}(${value}${unit})`;
             }).join(' ');
 

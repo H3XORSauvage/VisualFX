@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             invert: document.getElementById('invert'),
             'hue-rotate': document.getElementById('hue-rotate'),
             'blue-light-filter': document.getElementById('blue-light-filter'),
+            blur: document.getElementById('blur'),
             'nd-filter': document.getElementById('nd-filter')
         },
         inputs: {
@@ -21,6 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             invert: document.getElementById('invert-input'),
             'hue-rotate': document.getElementById('hue-rotate-input'),
             'blue-light-filter': document.getElementById('blue-light-filter-input'),
+            blur: document.getElementById('blur-input'),
             'nd-filter': document.getElementById('nd-filter-input')
         },
         tabButtons: document.querySelectorAll('.tab-button'),
@@ -41,6 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         invert: 0,
         'hue-rotate': 0,
         'blue-light-filter': 0,
+        blur: 0,
         'nd-filter': 0,
         isCplEnabled: false,
         isSiteEnabled: true,
@@ -156,13 +159,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             ui.sliders[key].addEventListener('input', () => {
                 const value = ui.sliders[key].value;
                 if (ui.inputs[key]) ui.inputs[key].value = value; // Check if input exists
-                siteSettings[key] = parseInt(value, 10);
+                siteSettings[key] = (key === 'blur' || key === 'motion-blur') ? parseFloat(value) : parseInt(value, 10);
                 if (key === 'nd-filter') updateNdFilterDisplay();
                 saveSiteSettings();
             });
             if (ui.inputs[key]) {
                 ui.inputs[key].addEventListener('change', () => {
-                    let value = parseInt(ui.inputs[key].value, 10);
+                    let value = (key === 'blur' || key === 'motion-blur') ? parseFloat(ui.inputs[key].value) : parseInt(ui.inputs[key].value, 10);
                     const max = parseInt(ui.inputs[key].max, 10);
                     if (isNaN(value)) value = defaultSettings[key];
                     if (value > max) value = max;

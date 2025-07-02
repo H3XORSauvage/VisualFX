@@ -119,6 +119,34 @@
         </div>
       </div>
 
+      <div class="control-group">
+        <div class="label-container"><span>Filtre lumière bleue</span></div>
+        <div class="input-container">
+          <input type="range" id="blue-light-filter" min="0" max="100" value="0">
+          <input type="number" id="blue-light-filter-input" min="0" max="100" value="0">
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="label-container">
+          <span>Filtre ND</span>
+          <span id="nd-filter-display">Off</span>
+        </div>
+        <div class="input-container">
+          <input type="range" id="nd-filter" min="0" max="3" value="0" step="1">
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="switch-container">
+        <label for="cpl-enable">Filtre Polarisant (CPL)</label>
+        <label class="switch">
+          <input type="checkbox" id="cpl-enable">
+          <span class="slider"></span>
+        </label>
+      </div>
+
       <button id="reset-button">Réinitialiser pour ce site</button>
     </div>
   </div>

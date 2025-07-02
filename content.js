@@ -12,6 +12,9 @@ const defaultSettings = {
     contrast: 100,
     invert: 0,
     'hue-rotate': 0,
+    'blue-light-filter': 0,
+    'nd-filter': 0,
+    isCplEnabled: false,
     isSiteEnabled: true,
     isAmbilightEnabled: false,
     targetType: 'body',
@@ -29,6 +32,8 @@ function getHostname(url) {
 // --- Global Variables ---
 let currentTargetElement = null;
 let filterOverlay = null;
+let blueLightFilterOverlay = null; // Notre nouveau calque
+let ndFilterOverlay = null; // Calque pour le filtre ND
 
 // --- Ambilight Variables ---
 let ambilightCanvas = null;
@@ -206,6 +211,42 @@ function setupAmbilight(settings) {
     }
 }
 
+function createBlueLightOverlay() {
+    if (blueLightFilterOverlay) return;
+    blueLightFilterOverlay = document.createElement('div');
+    Object.assign(blueLightFilterOverlay.style, {
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: 'rgba(255, 140, 0, 0.2)', // Couleur orange chaude
+        mixBlendMode: 'multiply', // Mode de fusion magique
+        pointerEvents: 'none', // Pour pouvoir cliquer à travers
+        zIndex: '2147483647', // Au-dessus de tout
+        display: 'none' // Caché par défaut
+    });
+    document.documentElement.appendChild(blueLightFilterOverlay);
+}
+
+function createNdFilterOverlay() {
+    if (ndFilterOverlay) return;
+    ndFilterOverlay = document.createElement('div');
+    Object.assign(ndFilterOverlay.style, {
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: 'black',
+        mixBlendMode: 'multiply', // Ajouté pour un vrai effet ND
+        pointerEvents: 'none',
+        zIndex: '2147483646', // Juste en dessous du filtre de lumière bleue
+        display: 'none'
+    });
+    document.documentElement.appendChild(ndFilterOverlay);
+}
+
 // --- Filter Application Functions ---
 function applyFilters() {
     browser.storage.local.get(null).then(storage => {
@@ -222,12 +263,42 @@ function applyFilters() {
         if (document.fullscreenElement) document.fullscreenElement.style.filter = 'none';
         if (filterOverlay) Object.assign(filterOverlay.style, { filter: 'none', clipPath: 'none', webkitClipPath: 'none' });
 
+        createBlueLightOverlay();
+        createNdFilterOverlay();
+
         if (isGloballyEnabled && isSiteEnabled) {
-            const filters = Object.entries(filterMap).map(([key, filterName]) => {
+            // Appliquer le filtre de lumière bleue
+            const blueLightValue = siteSettings['blue-light-filter'] !== undefined ? siteSettings['blue-light-filter'] : defaultSettings['blue-light-filter'];
+            if (blueLightValue > 0) {
+                blueLightFilterOverlay.style.display = 'block';
+                blueLightFilterOverlay.style.opacity = (blueLightValue / 100).toString();
+            } else {
+                blueLightFilterOverlay.style.display = 'none';
+            }
+
+            // Appliquer le filtre ND
+            const ndFilterValue = siteSettings['nd-filter'] !== undefined ? siteSettings['nd-filter'] : defaultSettings['nd-filter'];
+            const ndOpacities = [0, 0.25, 0.5, 0.75]; // Off, ND8, ND16, ND32 (valeurs ajustées pour un rendu plus doux)
+            if (ndFilterValue > 0) {
+                ndFilterOverlay.style.display = 'block';
+                ndFilterOverlay.style.opacity = ndOpacities[ndFilterValue].toString();
+            } else {
+                ndFilterOverlay.style.display = 'none';
+            }
+
+            let filters = Object.entries(filterMap).map(([key, filterName]) => {
                 const value = siteSettings[key] !== undefined ? siteSettings[key] : defaultSettings[key];
                 let unit = (key === 'hue-rotate') ? 'deg' : '%';
                 return `${filterName}(${value}${unit})`;
             }).join(' ');
+
+            // Appliquer les effets CPL si activé
+            if (siteSettings.isCplEnabled) {
+                // Augmenter légèrement la saturation et le contraste pour simuler le CPL
+                const currentSaturation = siteSettings.saturation !== undefined ? siteSettings.saturation : defaultSettings.saturation;
+                const currentContrast = siteSettings.contrast !== undefined ? siteSettings.contrast : defaultSettings.contrast;
+                filters += ` saturate(${currentSaturation * 1.1}%) contrast(${currentContrast * 1.05}%)`;
+            }
 
             const fullscreenEl = document.fullscreenElement;
             let target = fullscreenEl;

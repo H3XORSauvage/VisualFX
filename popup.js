@@ -10,14 +10,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             brightness: document.getElementById('brightness'),
             contrast: document.getElementById('contrast'),
             invert: document.getElementById('invert'),
-            'hue-rotate': document.getElementById('hue-rotate')
+            'hue-rotate': document.getElementById('hue-rotate'),
+            'blue-light-filter': document.getElementById('blue-light-filter'),
+            'nd-filter': document.getElementById('nd-filter')
         },
         inputs: {
             saturation: document.getElementById('saturation-input'),
             brightness: document.getElementById('brightness-input'),
             contrast: document.getElementById('contrast-input'),
             invert: document.getElementById('invert-input'),
-            'hue-rotate': document.getElementById('hue-rotate-input')
+            'hue-rotate': document.getElementById('hue-rotate-input'),
+            'blue-light-filter': document.getElementById('blue-light-filter-input'),
+            'nd-filter': document.getElementById('nd-filter-input')
         },
         tabButtons: document.querySelectorAll('.tab-button'),
         tabContents: document.querySelectorAll('.tab-content'),
@@ -25,7 +29,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         savePresetButton: document.getElementById('save-preset-button'),
         presetsList: document.getElementById('presets-list'),
         selectElementButton: document.getElementById('select-element-button'),
-        currentTargetDisplay: document.getElementById('current-target-display')
+        currentTargetDisplay: document.getElementById('current-target-display'),
+        cplEnable: document.getElementById('cpl-enable'),
+        ndFilterDisplay: document.getElementById('nd-filter-display')
     };
 
     const defaultSettings = {
@@ -34,6 +40,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         contrast: 100,
         invert: 0,
         'hue-rotate': 0,
+        'blue-light-filter': 0,
+        'nd-filter': 0,
+        isCplEnabled: false,
         isSiteEnabled: true,
         isAmbilightEnabled: false, // Ambilight default
         targetType: 'body',
@@ -62,10 +71,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     function updateUIFromSettings() {
         ui.siteEnable.checked = siteSettings.isSiteEnabled;
         ui.ambilightEnable.checked = siteSettings.isAmbilightEnabled;
+        ui.cplEnable.checked = siteSettings.isCplEnabled;
         Object.keys(ui.sliders).forEach(key => {
             const value = siteSettings[key] !== undefined ? siteSettings[key] : defaultSettings[key];
             ui.sliders[key].value = value;
-            ui.inputs[key].value = value;
+            if (ui.inputs[key]) ui.inputs[key].value = value; // Check if input exists
         });
         if (siteSettings.targetType === 'element') {
             ui.currentTargetDisplay.textContent = siteSettings.targetValue;
@@ -114,6 +124,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    const ndValues = ["Off", "ND8", "ND16", "ND32"];
+    function updateNdFilterDisplay() {
+        const value = ui.sliders['nd-filter'].value;
+        ui.ndFilterDisplay.textContent = ndValues[value];
+    }
+
     function setupListeners() {
         ui.globalEnable.addEventListener('change', async (e) => {
             await browser.storage.local.set({ isGloballyEnabled: e.target.checked });
@@ -131,24 +147,32 @@ document.addEventListener('DOMContentLoaded', async () => {
             saveSiteSettings();
         });
 
+        ui.cplEnable.addEventListener('change', () => {
+            siteSettings.isCplEnabled = ui.cplEnable.checked;
+            saveSiteSettings();
+        });
+
         Object.keys(ui.sliders).forEach(key => {
             ui.sliders[key].addEventListener('input', () => {
                 const value = ui.sliders[key].value;
-                ui.inputs[key].value = value;
+                if (ui.inputs[key]) ui.inputs[key].value = value; // Check if input exists
                 siteSettings[key] = parseInt(value, 10);
+                if (key === 'nd-filter') updateNdFilterDisplay();
                 saveSiteSettings();
             });
-            ui.inputs[key].addEventListener('change', () => {
-                let value = parseInt(ui.inputs[key].value, 10);
-                const max = parseInt(ui.inputs[key].max, 10);
-                if (isNaN(value)) value = defaultSettings[key];
-                if (value > max) value = max;
-                if (value < 0) value = 0;
-                ui.sliders[key].value = value;
-                ui.inputs[key].value = value;
-                siteSettings[key] = value;
-                saveSiteSettings();
-            });
+            if (ui.inputs[key]) {
+                ui.inputs[key].addEventListener('change', () => {
+                    let value = parseInt(ui.inputs[key].value, 10);
+                    const max = parseInt(ui.inputs[key].max, 10);
+                    if (isNaN(value)) value = defaultSettings[key];
+                    if (value > max) value = max;
+                    if (value < 0) value = 0;
+                    ui.sliders[key].value = value;
+                    ui.inputs[key].value = value;
+                    siteSettings[key] = value;
+                    saveSiteSettings();
+                });
+            }
         });
 
         ui.resetButton.addEventListener('click', () => {

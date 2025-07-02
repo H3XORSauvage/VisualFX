@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "VisualFX",
-  "version": "2.2",
+  "version": "2.3",
   "description": "Filtres visuels, personnalisation par site, préréglages pour une expérience unique!",
   "permissions": [
     "scripting",

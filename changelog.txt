@@ -1,5 +1,11 @@
 Notes de Version de VisualFX
 
+Version 2.3.0 - Améliorations des Filtres et Synchronisation (02/07/2025)
+
+ * Ajout du filtre "Flou (Blur)" pour appliquer un flou statique.
+ * Amélioration de la synchronisation des valeurs des curseurs (flou et flou de mouvement) avec le stockage, en gérant correctement les valeurs décimales.
+ * Correction de l'affichage des filtres "Lumière Bleue" et "ND" en mode plein écran, en déplaçant dynamiquement les calques vers l'élément en plein écran.
+
 Version 2.1.1 - Correction du mode plein écran (01/07/2025)
 
  * Correction d'un bug où les filtres disparaissaient en mode plein écran.
@@ -28,7 +34,7 @@ Version 2.1.1 - Correction du mode plein écran (01/07/2025)
        * Ajout de l'ID d'extension (gecko.id) dans manifest.json pour une meilleure gestion par Firefox.
 
 
-  Version 2.0.0 - Contrôle Avancé et Préréglages (Date : [Date de la v2.0])
+  Version 2.0.0 - Contrôle Avancé et Préréglages (Date : 01/07/2025)
 
 
    * Multiples Filtres Visuels :
@@ -49,7 +55,7 @@ Version 2.1.1 - Correction du mode plein écran (01/07/2025)
        * Boutons "Activer l'extension" (globalement) et "Activer pour ce site" pour un contrôle rapide.
        * Bouton "Réinitialiser pour ce site" pour revenir aux valeurs par défaut.
 
-  Version 1.1.0 - Style et Précision (Date : [Date de la v1.1])
+  Version 1.1.0 - Style et Précision (Date : 30/06/2025)
 
 
    * Design Tokyo Night :
@@ -58,7 +64,7 @@ Version 2.1.1 - Correction du mode plein écran (01/07/2025)
    * Affichage du Pourcentage :
        * Affichage en temps réel de la valeur du pourcentage de saturation à côté du slider.
 
-  Version 1.0.0 - Lancement Initial (Date : [Date de la v1.0])
+  Version 1.0.0 - Lancement Initial (Date : 30/06/2025)
 
 
    * Extension initiale permettant de modifier la saturation d'une page web via un slider.

@@ -116,13 +116,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         for (const name in allPresets) {
             const presetItem = document.createElement('div');
             presetItem.className = 'preset-item';
-            presetItem.innerHTML = `
-                <span>${name}</span>
-                <div class="preset-actions">
-                    <button class="apply-preset" data-preset-name="${name}">Appliquer</button>
-                    <button class="delete-preset delete-button" data-preset-name="${name}">Supprimer</button>
-                </div>
-            `;
+            const span = document.createElement('span');
+            span.textContent = name;
+
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'preset-actions';
+
+            const applyButton = document.createElement('button');
+            applyButton.className = 'apply-preset';
+            applyButton.dataset.presetName = name;
+            applyButton.textContent = 'Appliquer';
+
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'delete-preset delete-button';
+            deleteButton.dataset.presetName = name;
+            deleteButton.textContent = 'Supprimer';
+
+            actionsDiv.appendChild(applyButton);
+            actionsDiv.appendChild(deleteButton);
+
+            presetItem.appendChild(span);
+            presetItem.appendChild(actionsDiv);
             ui.presetsList.appendChild(presetItem);
         }
     }

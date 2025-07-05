@@ -85,13 +85,31 @@ function updateAmbilightFrame() {
         return;
     }
 
-    // Match halo position and size to the video
+    // Match halo position and size to the actual video content, accounting for letterboxing/pillarboxing
+    const videoAspectRatio = ambilightVideo.videoWidth / ambilightVideo.videoHeight;
+    const elementAspectRatio = videoRect.width / videoRect.height;
+
+    let displayedVideoWidth = videoRect.width;
+    let displayedVideoHeight = videoRect.height;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    if (videoAspectRatio > elementAspectRatio) {
+        // Video is wider than the element (letterboxing)
+        displayedVideoHeight = videoRect.width / videoAspectRatio;
+        offsetY = (videoRect.height - displayedVideoHeight) / 2;
+    } else if (videoAspectRatio < elementAspectRatio) {
+        // Video is taller than the element (pillarboxing)
+        displayedVideoWidth = videoRect.height * videoAspectRatio;
+        offsetX = (videoRect.width - displayedVideoWidth) / 2;
+    }
+
     Object.assign(ambilightHalo.style, {
         display: 'block',
-        top: `${videoRect.top}px`,
-        left: `${videoRect.left}px`,
-        width: `${videoRect.width}px`,
-        height: `${videoRect.height}px`,
+        top: `${videoRect.top + window.scrollY + offsetY}px`,
+        left: `${videoRect.left + window.scrollX + offsetX}px`,
+        width: `${displayedVideoWidth}px`,
+        height: `${displayedVideoHeight}px`,
     });
 
     const videoWidth = ambilightVideo.videoWidth;
@@ -127,8 +145,8 @@ function updateAmbilightFrame() {
         const averageBrightness = totalBrightness / (fullFrameData.length / 4); // Average brightness per pixel (0-255)
 
         // Map averageBrightness to opacity (e.g., 0.2 for very dark to 1.0 for very bright)
-        const minOpacity = 0.2; 
-        const maxOpacity = 1.0; 
+        const minOpacity = 0.2;
+        const maxOpacity = 1.0;
         const opacity = minOpacity + (averageBrightness / 255) * (maxOpacity - minOpacity);
         ambilightHalo.style.opacity = opacity;
 
@@ -160,7 +178,7 @@ function startAmbilight(video) {
     // Create the halo element
     ambilightHalo = document.createElement('div');
     Object.assign(ambilightHalo.style, {
-        position: 'fixed',
+        position: 'absolute',
         zIndex: '2147483646', // Just under the max z-index, to be on top of most things
         pointerEvents: 'none', // Click through the halo
         display: 'none' // Initially hidden
@@ -199,7 +217,7 @@ function startAmbilight(video) {
 function setupAmbilight(settings) {
     if (settings.isAmbilightEnabled) {
         // Filter for videos that are ready enough to have dimensions
-        const videos = Array.from(document.querySelectorAll('video')).filter(v => v.readyState >= 2 && v.videoWidth > 200);
+        const videos = Array.from(document.querySelectorAll('video')).filter(v => v.readyState >= 2 && v.videoWidth > 75);
         const largestVideo = videos.sort((a, b) => (b.getBoundingClientRect().width * b.getBoundingClientRect().height) - (a.getBoundingClientRect().width * a.getBoundingClientRect().height))[0];
         
         if (largestVideo && !largestVideo.hasAttribute('data-ambilight-active')) {
@@ -216,7 +234,7 @@ function createBlueLightOverlay() {
     if (!blueLightFilterOverlay) {
         blueLightFilterOverlay = document.createElement('div');
         Object.assign(blueLightFilterOverlay.style, {
-            backgroundColor: 'rgba(255, 140, 0, 0.2)', // Couleur orange chaude
+            backgroundColor: 'rgba(255, 100, 0, 0.2)', // Couleur orange chaude ajustée
             mixBlendMode: 'multiply', // Mode de fusion magique
             pointerEvents: 'none', // Pour pouvoir cliquer à travers
             zIndex: '2147483647', // Au-dessus de tout
@@ -269,9 +287,9 @@ function applyFilters() {
         }
 
         // Apply styles based on fullscreen state
-        const overlayPosition = currentFullscreenElement ? 'absolute' : 'fixed';
-        const overlayWidth = currentFullscreenElement ? '100%' : '100vw';
-        const overlayHeight = currentFullscreenElement ? '100%' : '100vh';
+        const overlayPosition = 'fixed';
+        const overlayWidth = '100vw';
+        const overlayHeight = '100vh';
 
         Object.assign(blueLightOverlay.style, {
             position: overlayPosition,

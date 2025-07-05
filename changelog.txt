@@ -1,5 +1,13 @@
 Notes de Version de VisualFX
 
+Version 2.4.0 - Améliorations Majeures de l'Expérience Utilisateur (UX) (05/07/2025)
+
+ * Transitions d'onglets fluides : Changement d'onglet avec une animation de fondu douce.
+ * Animations de catégories améliorées : Ouverture et fermeture des catégories avec des animations fluides et sans rebond.
+ * Barre de défilement personnalisée : Masque les barres de défilement natives et introduit une barre verticale discrète et stylisée pour une meilleure intégration visuelle.
+ * Mini-tutoriel de première utilisation : Un guide rapide s'affiche à la première ouverture de l'extension pour aider les nouveaux utilisateurs.
+ * Ajustement du filtre lumière bleue : Optimisation de la couleur de la superposition pour une réduction plus efficace de la lumière bleue.
+
 Version 2.3.0 - Améliorations des Filtres et Synchronisation (02/07/2025)
 
  * Ajout du filtre "Flou (Blur)" pour appliquer un flou statique.

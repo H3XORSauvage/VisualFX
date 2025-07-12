@@ -13,7 +13,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             'hue-rotate': document.getElementById('hue-rotate'),
             'blue-light-filter': document.getElementById('blue-light-filter'),
             blur: document.getElementById('blur'),
-            'nd-filter': document.getElementById('nd-filter')
+            'nd-filter': document.getElementById('nd-filter'),
+            'ambilight-intensity': document.getElementById('ambilight-intensity'),
+            'ambilight-blur': document.getElementById('ambilight-blur'),
+            'ambilight-spread': document.getElementById('ambilight-spread'),
+            'volume-boost': document.getElementById('volume-boost')
         },
         inputs: {
             saturation: document.getElementById('saturation-input'),
@@ -23,7 +27,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             'hue-rotate': document.getElementById('hue-rotate-input'),
             'blue-light-filter': document.getElementById('blue-light-filter-input'),
             blur: document.getElementById('blur-input'),
-            'nd-filter': document.getElementById('nd-filter-input')
+            'nd-filter': document.getElementById('nd-filter-input'),
+            'ambilight-intensity': document.getElementById('ambilight-intensity-input'),
+            'ambilight-blur': document.getElementById('ambilight-blur-input'),
+            'ambilight-spread': document.getElementById('ambilight-spread-input'),
+            'volume-boost': document.getElementById('volume-boost-input')
         },
         tabButtons: document.querySelectorAll('.tab-button'),
         tabContents: document.querySelectorAll('.tab-content'),
@@ -51,6 +59,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         isCplEnabled: false,
         isSiteEnabled: true,
         isAmbilightEnabled: false, // Ambilight default
+        'ambilight-intensity': 100,
+        'ambilight-blur': 100,
+        'ambilight-spread': 60,
+        'volume-boost': 100,
         targetType: 'body',
         targetValue: 'body'
     };

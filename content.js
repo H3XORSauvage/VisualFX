@@ -18,6 +18,10 @@ const defaultSettings = {
     isCplEnabled: false,
     isSiteEnabled: true,
     isAmbilightEnabled: false,
+    'ambilight-intensity': 100,
+    'ambilight-blur': 100,
+    'ambilight-spread': 60,
+    'volume-boost': 100,
     targetType: 'body',
     targetValue: 'body'
 };
@@ -35,6 +39,7 @@ let currentTargetElement = null;
 let filterOverlay = null;
 let blueLightFilterOverlay = null; // Notre nouveau calque
 let ndFilterOverlay = null; // Calque pour le filtre ND
+let currentSiteSettings = defaultSettings;
 
 // --- Ambilight Variables ---
 let ambilightCanvas = null;
@@ -43,6 +48,9 @@ let ambilightVideo = null;
 let ambilightAnimationId = null;
 let ambilightHalo = null; // The halo element, separate from the video
 let ambilightResizeObserver = null; // For observing video element resizing
+let audioContext = null;
+let gainNode = null;
+let audioSource = null;
 
 // --- Ambilight Core Functions ---
 function stopAmbilight() {
@@ -148,13 +156,16 @@ function updateAmbilightFrame() {
         const minOpacity = 0.2;
         const maxOpacity = 1.0;
         const opacity = minOpacity + (averageBrightness / 255) * (maxOpacity - minOpacity);
-        ambilightHalo.style.opacity = opacity;
+        ambilightHalo.style.opacity = opacity * ((currentSiteSettings['ambilight-intensity'] || 100) / 100);
+
+        const blurValue = currentSiteSettings['ambilight-blur'] || 100;
+        const spreadValue = currentSiteSettings['ambilight-spread'] || 60;
 
         ambilightHalo.style.boxShadow = `
-            0 -60px 100px 60px ${getAverageColor(topData)},
-            0 60px 100px 60px ${getAverageColor(bottomData)},
-            -60px 0 100px 60px ${getAverageColor(leftData)},
-            60px 0 100px 60px ${getAverageColor(rightData)}
+            0 -${spreadValue}px ${blurValue}px ${spreadValue}px ${getAverageColor(topData)},
+            0 ${spreadValue}px ${blurValue}px ${spreadValue}px ${getAverageColor(bottomData)},
+            -${spreadValue}px 0 ${blurValue}px ${spreadValue}px ${getAverageColor(leftData)},
+            ${spreadValue}px 0 ${blurValue}px ${spreadValue}px ${getAverageColor(rightData)}
         `;
 
     } catch (e) {
@@ -230,6 +241,58 @@ function setupAmbilight(settings) {
     }
 }
 
+// --- Audio Boost Functions ---
+function stopAudioBoost() {
+    if (audioSource) {
+        audioSource.disconnect();
+        audioSource = null;
+    }
+    if (gainNode) {
+        gainNode.disconnect();
+        gainNode = null;
+    }
+    if (audioContext) {
+        audioContext.close();
+        audioContext = null;
+    }
+    console.log("VisualFX: Audio boost stopped.");
+}
+
+function setupAudioBoost(settings) {
+    const videos = Array.from(document.querySelectorAll('video'));
+    if (videos.length === 0) {
+        stopAudioBoost();
+        return;
+    }
+
+    const video = videos[0]; // Target the first video found
+
+    // Check if audioContext is suspended, and resume if necessary
+    if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    if (!gainNode) {
+        gainNode = audioContext.createGain();
+        gainNode.connect(audioContext.destination);
+    }
+
+    if (!audioSource || audioSource.mediaElement !== video) {
+        if (audioSource) audioSource.disconnect();
+        audioSource = audioContext.createMediaElementSource(video);
+        audioSource.connect(gainNode);
+    }
+
+    const volumeBoostValue = settings['volume-boost'] !== undefined ? settings['volume-boost'] : defaultSettings['volume-boost'];
+    gainNode.gain.value = volumeBoostValue / 100; // 100% = 1, 200% = 2, etc.
+
+    console.log(`VisualFX: Audio boost set to ${volumeBoostValue}%`);
+}
+
 function createBlueLightOverlay() {
     if (!blueLightFilterOverlay) {
         blueLightFilterOverlay = document.createElement('div');
@@ -261,8 +324,10 @@ function applyFilters() {
     browser.storage.local.get(null).then(storage => {
         const hostname = getHostname(window.location.href);
         const siteSettings = storage[hostname] || defaultSettings;
+        currentSiteSettings = siteSettings;
 
         setupAmbilight(siteSettings);
+        setupAudioBoost(siteSettings); // Appel de la fonction d'amplification audio
 
         const isGloballyEnabled = storage.isGloballyEnabled !== false;
         const isSiteEnabled = siteSettings.isSiteEnabled;
@@ -353,6 +418,8 @@ function applyFilters() {
             
             currentTargetElement = target;
             currentTargetElement.style.filter = filters;
+        } else {
+            stopAudioBoost(); // Arrêter l'amplification si l'extension est désactivée
         }
     });
 }

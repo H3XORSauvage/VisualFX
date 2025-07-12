@@ -1,5 +1,9 @@
 Notes de Version de VisualFX
 
+Version 2.5 - VisualFX
+- Ajout d'un système de contrôle du volume.
+- Ajout de paramètres d'ambilight pour une meilleure immersion.
+
 Version 2.4.0 - Améliorations Majeures de l'Expérience Utilisateur (UX) (05/07/2025)
 
  * Transitions d'onglets fluides : Changement d'onglet avec une animation de fondu douce.

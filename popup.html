@@ -87,6 +87,33 @@
     </label>
   </div>
 
+  <details class="filter-category" id="ambilight-settings">
+    <summary>💡 Réglages Ambilight</summary>
+    <div>
+      <div class="control-group">
+        <div class="label-container"><span>Intensité</span></div>
+        <div class="input-container">
+          <input type="range" id="ambilight-intensity" min="20" max="200" value="100">
+          <input type="number" id="ambilight-intensity-input" min="20" max="200" value="100">
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="label-container"><span>Flou</span></div>
+        <div class="input-container">
+          <input type="range" id="ambilight-blur" min="10" max="250" value="100">
+          <input type="number" id="ambilight-blur-input" min="10" max="250" value="100">
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="label-container"><span>Diffusion</span></div>
+        <div class="input-container">
+          <input type="range" id="ambilight-spread" min="10" max="250" value="60">
+          <input type="number" id="ambilight-spread-input" min="10" max="250" value="60">
+        </div>
+      </div>
+    </div>
+  </details>
+
   <div class="control-group">
     <div class="label-container"><span>Cible des filtres</span></div>
     <button id="select-element-button">Sélectionner un élément</button>
@@ -190,8 +217,20 @@
     <div id="presets-list"></div>
   </div>
 
+  <div id="tab-audio" class="tab-content">
+    <h3>Paramètres Audio</h3>
+    <div class="control-group">
+      <div class="label-container"><span>Amplification du volume</span></div>
+      <div class="input-container"> 
+        <input type="range" id="volume-boost" min="100" max="500" value="100">
+        <input type="number" id="volume-boost-input" min="100" max="500" value="100">
+      </div>
+    </div>
+  </div>
+
   <div class="tabs-container">
-    <button class="tab-button active" data-tab="tab-controls">Contrôles</button>
+    <button class="tab-button active" data-tab="tab-controls">Visuel</button>
+    <button class="tab-button" data-tab="tab-audio">Son</button>
     <button class="tab-button" data-tab="tab-presets">Préréglages</button>
   </div>
 

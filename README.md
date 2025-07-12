@@ -1,6 +1,6 @@
 # Better Video - Extension Firefox
 
-Une extension Firefox simple pour appliquer des filtres visuels (ambilight pour les balises <video>, saturation, contraste, luminosité, etc.) et aussi un contrôle de volume (jusqu'à 500%) aux pages web et aux vidéos, y compris en mode plein écran.
+Une extension Firefox simple pour appliquer des filtres visuels (saturation, contraste, luminosité, etc.) et aussi un contrôle de volume (jusqu'à 500%) aux pages web et aux vidéos, y compris en mode plein écran.
 
 ## Comment tester l'extension
 
